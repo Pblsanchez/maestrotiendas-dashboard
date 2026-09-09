@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Maestro de Tiendas CRM</title>
+
+    <!-- CSS Propio -->
+    css/styles.css
+
+    <!-- Font Awesome -->
+    https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css
+
+    <!-- DataTables -->
+    https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css
+
+    <!-- Leaflet -->
+    https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
+
+</head>
+
+<body>
+
+    <!-- ====================================== -->
+    <!-- HEADER -->
+    <!-- ====================================== -->
+
+    <header class="main-header">
+
+        <div class="header-left">
+
+            <h1>
+                Maestro de Tiendas CRM
+            </h1>
+
+            <p>
+                Dashboard de Gestión y Calidad de Datos
+            </p>
+
+        </div>
+
+        <div class="header-right">
+
+            <label class="upload-btn">
+
+                <i class="fa-solid fa-file-excel"></i>
+
+                Cargar Excel
+
+                <input
+                    type="file"
+                    id="excelFile"
+                    accept=".xlsx,.xls"
+                    hidden>
+
+            </label>
+
+        </div>
+
+    </header>
+
+    <!-- ====================================== -->
+    <!-- RESUMEN CARGA -->
+    <!-- ====================================== -->
+
+    <section class="summary-bar">
+
+        <div class="summary-item">
+            <span class="summary-label">Última carga</span>
+            <span id="lastLoadDate">-</span>
+        </div>
+
+        <div class="summary-item">
+            <span class="summary-label">Tiendas procesadas</span>
+            <span id="loadedStores">0</span>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- FILTROS -->
+    <!-- ====================================== -->
+
+    <section class="filters-section">
+
+        <h2>
+            Filtros
+        </h2>
+
+        <div class="filters-grid">
+
+            <select id="filterRegion">
+                <option value="">Todas las regiones</option>
+            </select>
+
+            <select id="filterProvince">
+                <option value="">Todas las provincias</option>
+            </select>
+
+            <select id="filterStoreType">
+                <option value="">Todos los tipos</option>
+            </select>
+
+            <select id="filterStatus">
+                <option value="">Todos los estados</option>
+            </select>
+
+            <select id="filterCommercialRegion">
+                <option value="">Región Comercial</option>
+            </select>
+
+            <select id="filterSegment">
+                <option value="">Segmentación</option>
+            </select>
+
+            <select id="filterSpecialist">
+                <option value="">Especialista</option>
+            </select>
+
+            <select id="filterTourism">
+                <option value="">Corredor Turístico</option>
+            </select>
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- KPIS -->
+    <!-- ====================================== -->
+
+    <section class="kpi-section">
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-store"></i>
+            <h3 id="kpiTotalStores">0</h3>
+            <span>Total Tiendas</span>
+        </div>
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3 id="kpiActiveStores">0</h3>
+            <span>Activas</span>
+        </div>
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <h3 id="kpiInactiveStores">0</h3>
+            <span>Inactivas</span>
+        </div>
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-chart-pie"></i>
+            <h3 id="kpiCompleteness">0%</h3>
+            <span>Completitud</span>
+        </div>
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h3 id="kpiWithCoordinates">0</h3>
+            <span>Con Coordenadas</span>
+        </div>
+
+        <div class="kpi-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3 id="kpiAlerts">0</h3>
+            <span>Alertas</span>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- DASHBOARD GRAFICOS -->
+    <!-- ====================================== -->
+
+    <section class="charts-section">
+
+        <div class="chart-card">
+            <h3>Tiendas por Región</h3>
+            <canvas id="chartRegions"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Tipos de Tienda</h3>
+            <canvas id="chartStoreTypes"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Top Provincias</h3>
+            <canvas id="chartProvinces"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Región Comercial</h3>
+            <canvas id="chartCommercialRegion"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Segmentación</h3>
+            <canvas id="chartSegment"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Calidad de Datos</h3>
+            <canvas id="chartDataQuality"></canvas>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- CALIDAD DE DATOS -->
+    <!-- ====================================== -->
+
+    <section class="quality-section">
+
+        <h2>
+            Calidad de Datos
+        </h2>
+
+        <div class="quality-grid">
+
+            <div class="quality-alert">
+                <span>Sin Coordenadas</span>
+                <strong id="missingCoordinates">0</strong>
+            </div>
+
+            <div class="quality-alert">
+                <span>Sin Email Oficial</span>
+                <strong id="missingEmail">0</strong>
+            </div>
+
+            <div class="quality-alert">
+                <span>Sin Responsable</span>
+                <strong id="missingResponsible">0</strong>
+            </div>
+
+            <div class="quality-alert">
+                <span>Sin GLN</span>
+                <strong id="missingGLN">0</strong>
+            </div>
+
+            <div class="quality-alert">
+                <span>Sin Contacto Principal</span>
+                <strong id="missingContact">0</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- MAPA -->
+    <!-- ====================================== -->
+
+    <section class="map-section">
+
+        <h2>
+            Mapa de Tiendas
+        </h2>
+
+        <div id="storesMap"></div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- TABLA -->
+    <!-- ====================================== -->
+
+    <section class="table-section">
+
+        <div class="table-header">
+
+            <h2>
+                Detalle de Tiendas
+            </h2>
+
+            <div class="table-actions">
+
+                <button id="exportCsvBtn">
+                    <i class="fa-solid fa-file-csv"></i>
+                    Exportar CSV
+                </button>
+
+                <button id="exportExcelBtn">
+                    <i class="fa-solid fa-file-excel"></i>
+                    Exportar Excel
+                </button>
+
+            </div>
+
+        </div>
+
+        <table id="storesTable" class="display">
+
+            <thead>
+                <tr>
+
+                    <th>ID</th>
+                    <th>Tienda</th>
+                    <th>Razón Social</th>
+                    <th>CUIT</th>
+                    <th>Región</th>
+                    <th>Provincia</th>
+                    <th>Localidad</th>
+                    <th>Estado</th>
+                    <th>Tipo</th>
+                    <th>Segmentación</th>
+                    <th>Especialista</th>
+
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- LIBRERIAS -->
+    <!-- ====================================== -->
+
+    https://code.jquery.com/jquery-3.7.1.min.jsscript>
+
+    https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.jsscript>
+
+    https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.jsscript>
+
+    https://cdn.jsdelivr.net/npm/chart.jsscript>
+
+    https://unpkg.com/leaflet@1.9.4/dist/leaflet.jsscript>
+
+    <!-- JAVASCRIPT PROPIO -->
+
+    js/app.jsscript>
+    js/data-loader.jsscript>
+    js/kpis.jsscript>
+    js/charts.jsscript>
+    js/filters.jsscript>
+    js/map.jsscript>
+    js/table.jsscript>
+    js/export.jsscript>
+    js/quality.jsscript>
+
+</body>
+
+</html>
